@@ -8,6 +8,8 @@ public class FPSCameraController : MonoBehaviour
     public float sensY;
 
     public Transform orientation;
+    public Transform headCube;
+    public Transform capsule;
 
     private float xRotation;
     private float yRotation;
@@ -22,6 +24,9 @@ public class FPSCameraController : MonoBehaviour
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
             }
+        } else if (Cursor.visible == false) {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
     }
 
@@ -39,5 +44,12 @@ public class FPSCameraController : MonoBehaviour
         //Rotating Cam and Orientation
         transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
         orientation.rotation = Quaternion.Euler(0, yRotation, 0);
+
+        float newXRotation = xRotation;
+
+        newXRotation = Mathf.Clamp(newXRotation, -50, 26);
+        headCube.rotation = Quaternion.Euler(newXRotation, yRotation, 0);
+        
+        capsule.rotation = Quaternion.Euler(0, yRotation + 90, 0);
     }
 }

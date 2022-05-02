@@ -27,6 +27,8 @@ public class FPSMovementController : NetworkBehaviour
     
     [Header("References")]
     public Transform orientaion;
+    public Transform headCube;
+    public Transform capsule;
     public Transform camPosition;
     public GameObject cameraHolderPrefab;
 
@@ -34,6 +36,8 @@ public class FPSMovementController : NetworkBehaviour
 
     [Header("Multiplayer Config")]
     public GameObject playerModel;
+    public MeshRenderer playerMesh;
+    public Material[] playerColors;
 
     Vector3 moveDirection;
     float horizontalInput;
@@ -57,6 +61,7 @@ public class FPSMovementController : NetworkBehaviour
         if (SceneManager.GetActiveScene().name == "Game") {
             if (playerModel.activeSelf == false) {
                 SetRandomPosition();
+                PlayerCosmeticSetup();
                 playerModel.SetActive(true);
 
                 if (hasAuthority && cameraSpawned == false) {
@@ -64,6 +69,9 @@ public class FPSMovementController : NetworkBehaviour
                     GameObject cameraHolderInstance = Instantiate(cameraHolderPrefab, transform.position, transform.rotation);
                     cameraHolderInstance.GetComponent<CameraHolder>().cameraPosition = camPosition;
                     cameraHolderInstance.GetComponent<CameraHolder>().cameraController.orientation = orientaion;
+                    cameraHolderInstance.GetComponent<CameraHolder>().cameraController.headCube = headCube;
+                    cameraHolderInstance.GetComponent<CameraHolder>().cameraController.capsule = capsule;
+                    headCube.gameObject.SetActive(false);
                     cameraSpawned = true;
                 }
             }
@@ -148,5 +156,9 @@ public class FPSMovementController : NetworkBehaviour
 
     public void SetRandomPosition() {
         transform.position = new Vector3(Random.Range(-20f, 20f), 4f, Random.Range(-20f, 20f));
+    }
+
+    public void PlayerCosmeticSetup() {
+        playerMesh.material = playerColors[GetComponent<PlayerObjectController>().PlayerColor];
     }
 }

@@ -15,6 +15,9 @@ public class PlayerObjectController : NetworkBehaviour
     [SyncVar(hook = nameof(PlayerNameUpdate))] public string playerName;
     [SyncVar(hook = nameof(PlayerReadyUpdate))] public bool isReady;
 
+    //Cosmetics
+    [SyncVar(hook = nameof(SendPlayerColor))] public int PlayerColor;
+
     private void PlayerReadyUpdate(bool oldReady, bool newReady)
     {
         if (isServer) {
@@ -96,5 +99,27 @@ public class PlayerObjectController : NetworkBehaviour
     [Command]
     public void CmdCanStartGame(string sceneName) {
         manager.StartGame(sceneName);
+    }
+
+    //Cosmetics
+    [Command]
+    private void CmdUpdatePlayerColor(int newValue)
+    {
+        SendPlayerColor(PlayerColor, newValue);
+    }
+
+    private void SendPlayerColor(int oldValue, int newValue)
+    {
+        if (isServer) {
+            PlayerColor = newValue;
+        } 
+
+        if (isClient && (oldValue != newValue)) {
+            UpdateColor(newValue);
+        }
+    }
+
+    private void UpdateColor(int message) {
+        PlayerColor = message;
     }
 }
